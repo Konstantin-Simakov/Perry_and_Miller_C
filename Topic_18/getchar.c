@@ -15,14 +15,11 @@ int main(void)
 	{
 		msg[i] = getchar();		// Input 1 character.
 		if ('\n' == msg[i])
-		{
-			i--;
 			break;
-		}
 	}
 	putchar('\n');				// Line break after loop completion.
 
-	for (; i >= 0; --i)
+	for (--i; i >= 0; --i)
 		putchar(msg[i]);
 	putchar('\n');
 
