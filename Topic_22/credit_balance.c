@@ -7,8 +7,8 @@
 
 int main(void)
 {
-	int ctr;				
-	int id_search;
+    int ctr;                
+    int id_search;
     int is_found = 0;          // Boolean value; 1 (True) if id is found.
     int cust_id[CUSTOMERS] = {
         313, 453, 502, 101, 892,
@@ -50,5 +50,5 @@ int main(void)
         printf("  Entered ID %3d hasn\'t found in the list.\n", id_search);
     }
 
-	return 0;
+    return 0;
 }
