@@ -21,7 +21,8 @@ int main(void)
     int temp_id, inner, outer, did_swap;    // For sorting.
     float temp_bal;
 
-    // Sortint cust_id array by ascending order.
+    // Sorting the cust_id array (and its parallel cust_bal 
+    // array along with it) in ascending order.
     for (outer = 0; outer < CUSTOMERS; outer++)
     {
         did_swap = 0;
