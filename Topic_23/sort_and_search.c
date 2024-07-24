@@ -14,31 +14,35 @@ int main(void)
         313, 453, 502, 101, 892,
         475, 792, 912, 343, 633
     };
-    float cust_bal[CUSTOMERS] = {       // Client balances.
+    float cust_bal[CUSTOMERS] = {           // Client balances.
         0.00, 45.43, 71.23, 301.56, 9.08,
         192.41, 389.99, 229.67, 18.31, 59.54
     };
-    int temp_id, inner, outer;          // For sorting.
+    int temp_id, inner, outer, did_swap;    // For sorting.
     float temp_bal;
 
-    // Sortint cust_id array by descending order.
-    for (outer = 0; outer < CUSTOMERS - 1; outer++)
+    // Sortint cust_id array by ascending order.
+    for (outer = 0; outer < CUSTOMERS; outer++)
     {
-        for (inner = outer + 1; inner < CUSTOMERS; inner++)
+        did_swap = 0;
+        for (inner = 0; inner < CUSTOMERS - 1; inner++)
         {
-            if (cust_id[inner] < cust_id[outer])
+            if (cust_id[inner] > cust_id[inner + 1])
             {
+                did_swap = 1;
                 // Swap id.
                 temp_id = cust_id[inner];
-                cust_id[inner] = cust_id[outer];
-                cust_id[outer] = temp_id;
+                cust_id[inner] = cust_id[inner + 1];
+                cust_id[inner + 1] = temp_id;
 
                 // And swap balances according to the same condition. 
                 temp_bal = cust_bal[inner];
-                cust_bal[inner] = cust_bal[outer];
-                cust_bal[outer] = temp_bal;
+                cust_bal[inner] = cust_bal[inner + 1];
+                cust_bal[inner + 1] = temp_bal;
             }           
         }
+        if (0 == did_swap)
+            break;
     }
 
     // User interaction.
@@ -46,8 +50,10 @@ int main(void)
     printf("Enter searched user id: ");
     scanf(" %d", &id_search);
     // Search.
+    is_found = 0;
     for (ctr = 0; ctr < CUSTOMERS; ++ctr)
     {
+        printf("%d ", cust_id[ctr]);
         if (cust_id[ctr] == id_search)
         {
             is_found = 1;

@@ -9,6 +9,7 @@
 int main(void)
 {
     int ctr, inner, outer, temp;
+    int did_swap;                       // Boolean value.
     int arr[NUM];
 
     srand(time(0));
@@ -20,15 +21,23 @@ int main(void)
         printf("%2d  ", arr[ctr]);
     putchar('\n');
 
-    // Array sorting.
-    for (outer = 0; outer < NUM - 1; outer++)
-        for (inner = outer + 1; inner < NUM; inner++)
-            if (arr[inner] < arr[outer])
+    // Improved array bubble sorting in ascending order.
+    for (outer = 0; outer < NUM; outer++)
+    {
+        did_swap = 0;
+        for (inner = 0; inner < NUM - 1; inner++)
+        {
+            if (arr[inner] > arr[inner + 1])
             {
                 temp = arr[inner];
-                arr[inner] = arr[outer];
-                arr[outer] = temp;
-            }
+                arr[inner] = arr[inner + 1];
+                arr[inner + 1] = temp;
+                did_swap = 1;
+            }            
+        }
+        if (0 == did_swap)
+            break;
+    }
 
     puts("\nArray after sorting:");
     for (ctr = 0; ctr < NUM; ctr++)
