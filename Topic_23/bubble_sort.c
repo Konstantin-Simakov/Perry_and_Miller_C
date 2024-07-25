@@ -1,5 +1,5 @@
 /* bubble_sort.c */
-/* Demonstrate improved bubble sort algorithm. */
+/* Demonstrate common bubble sort algorithm. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -9,7 +9,6 @@
 int main(void)
 {
     int ctr, inner, outer, temp;
-    int did_swap;                       // Boolean value.
     int arr[NUM];
 
     srand(time(0));
@@ -21,10 +20,9 @@ int main(void)
         printf("%2d  ", arr[ctr]);
     putchar('\n');
 
-    // Improved array bubble sorting in ascending order.
+    // Common array bubble sorting in ascending order.
     for (outer = 0; outer < NUM; outer++)
     {
-        did_swap = 0;
         for (inner = 0; inner < NUM - 1; inner++)
         {
             if (arr[inner] > arr[inner + 1])
@@ -32,11 +30,8 @@ int main(void)
                 temp = arr[inner];
                 arr[inner] = arr[inner + 1];
                 arr[inner + 1] = temp;
-                did_swap = 1;
             }            
         }
-        if (0 == did_swap)
-            break;
     }
 
     puts("\nArray after sorting:");
