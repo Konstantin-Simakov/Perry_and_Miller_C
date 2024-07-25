@@ -23,7 +23,7 @@ int main(void)
 
     // Sorting the cust_id array (and its parallel cust_bal 
     // array along with it) in ascending order
-    // using the bubble sort method with two optimizations.
+    // using the bubble sort method with three optimizations.
     for (outer = 0; outer < CUSTOMERS - 1; outer++)
     {
         did_swap = 0;
