@@ -18,9 +18,9 @@ int main(void)
     fptr = fopen(FILE_NAME, "w+");
     if (!fptr)
     {
+        // printf("Couldn\'t open the file %s.\n", FILE_NAME);
         fprintf(stderr, "errno: %d\n", errno);
         perror(FILE_NAME);
-        // printf("Couldn\'t open the file %s.\n", FILE_NAME);
         exit(EXIT_FAILURE);
     }
 
@@ -42,8 +42,8 @@ int main(void)
             exit(EXIT_FAILURE);
         }
         letter = fgetc(fptr);
-        fputc(letter, stdout);
         // printf(" %d\n", letter);
+        fputc(letter, stdout);
     }
     putchar('\n');
     fclose(fptr);
