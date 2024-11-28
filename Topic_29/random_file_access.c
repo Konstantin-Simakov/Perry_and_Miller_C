@@ -42,8 +42,8 @@ int main(void)
             exit(EXIT_FAILURE);
         }
         letter = fgetc(fptr);
-        // printf(" %d\n", letter);
         fputc(letter, stdout);
+        // printf(" %d\n", letter);
     }
     putchar('\n');
     fclose(fptr);
