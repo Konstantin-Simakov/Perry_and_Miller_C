@@ -14,7 +14,7 @@ int main(void)
     // Impossible to print 'g_2' in printf() because
     // it's defined after its call.
     printf("g_1 = %d, l_1 = %.2f\n", g_1, l_1);     // Output global variable and then local one.
-    print_again();                                  // Call the first self-writing function.
+    print_again();                                  // Call the first self-written function.
 
     return 0;
 }
