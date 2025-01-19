@@ -18,17 +18,14 @@ The user's updated bankroll is then displayed, and they are given the option to 
 
 int main(void)
 {
-    int card_rank[HAND];
-    int card_suit[HAND];
-    int final_rank[HAND];
-    int final_suit[HAND];
+    Hand first_hand;            // The hand of the first deal.
+    Hand final_hand;            // The hand of the final hand.
     int ranks_in_hand[RANKS];
     int suits_in_hand[SUITS];
-    int winnings, prize;
+    int win_factor, prize;
     char still_play;
     int bet;
-    int bank = 100;
-    int i;
+    int bank = 100;             // Initial bank.
 
     srand(time(0));
     print_greeting();
@@ -37,22 +34,19 @@ int main(void)
     {
         bet = get_bet();
 
-        get_first_hand(card_rank, card_suit, HAND);
+        get_first_hand(&first_hand);
         printf("Here is your %d cards:\n", HAND);
-        display_hand(card_rank, card_suit, HAND);
+        display_hand(&first_hand);
 
-        for (i = 0; i < RANKS; ++i)
-            ranks_in_hand[i] = 0;
-        for (i = 0; i < SUITS; ++i)
-            suits_in_hand[i] = 0;
+        zero_out(ranks_in_hand, RANKS);
+        zero_out(suits_in_hand, SUITS);
 
-        get_final_hand(card_rank, final_rank, card_suit, final_suit, HAND, 
-                    ranks_in_hand, suits_in_hand);
+        get_final_hand(&final_hand, &first_hand, ranks_in_hand, suits_in_hand);
         printf("Your last batch of cards:\n");
-        display_hand(final_rank, final_suit, HAND);
+        display_hand(&final_hand);
 
-        winnings = analyze_hand(ranks_in_hand, RANKS, suits_in_hand, SUITS);
-        prize = bet * winnings;
+        win_factor = analyze_hand(ranks_in_hand, suits_in_hand);
+        prize = bet * win_factor;
         printf("You win %d credits!\n", prize);
         bank = bank - bet + prize;
         printf("You have %d in your bank.\n", bank);

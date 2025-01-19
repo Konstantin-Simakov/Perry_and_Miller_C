@@ -10,28 +10,30 @@ Compile: "gcc draw_pocker.c draw_pocker_sup.c -Wall -pedantic" */
 #include <stdbool.h>
 #include "draw_pocker.h"
 
-void display_hand(const int card_rank[], const int card_suit[], int hand)
+/*------------------------------------------------------------------------*/
+void display_hand(const Hand * p_hand)
 {
     int i;
     char str[SIZE];
     char suit;
     char * rank;
 
-    for (i = 0; i < hand; ++i)
+    for (i = 0; i < HAND; ++i)
     {
-        suit = get_suit(card_suit[i]);
-        rank = get_rank(card_rank[i], str);
+        suit = get_suit(p_hand->card_suits[i]);
+        rank = get_rank(p_hand->card_ranks[i], str);
 
         printf("Card #%d: %s%c\n", i + 1, rank, suit);
     }
 }
 
+/*------------------------------------------------------------------------*/
 void print_greeting(void)
 {
-    printf("***************************************************\n");
+    printf("***********************************************************\n");
     printf("\n\tWelcome to the casino for newbies!\n");
     printf("\tHouse of video draw pocker\n\n");
-    printf("***************************************************\n");
+    printf("***********************************************************\n");
     printf("That\'s rules:\n");
     printf("Your start balance is 100 credits, you have to bet from 1 to %d credits.\n", HAND);
     printf("If you have given %d cards, you have to choose which cards to stay and which ones to drop.\n", HAND);
@@ -43,9 +45,20 @@ void print_greeting(void)
     printf("Straight\t\t\t4 credits\n");
     printf("Flash\t\t\t\t5 credits\n");
     printf("Flash royal\t\t\t20 credits\n");
+    printf("***********************************************************\n");
     printf("Enjoy!\n\n");
 }
 
+/*------------------------------------------------------------------------*/
+void zero_out(int arr[], int n)
+{
+    int i;
+
+    for (i = 0; i < n; ++i)
+        arr[i] = 0;
+}
+
+/*------------------------------------------------------------------------*/
 char get_suit(int num_suit)
 {
     char suit = 0;
@@ -65,13 +78,14 @@ char get_suit(int num_suit)
     return suit;
 }
 
+/*------------------------------------------------------------------------*/
 char * get_rank(int num_rank, char * rank)
 {
     switch (num_rank)
     {
         case 0: strcpy(rank, "A");      // Ace.
             break;
-        case 1: strcpy(rank, "1");
+        case 1: strcpy(rank, "K");      // King.
             break;
         case 2: strcpy(rank, "2");
             break;
@@ -95,23 +109,22 @@ char * get_rank(int num_rank, char * rank)
             break;
         case 12: strcpy(rank, "Q");     // Queen.
             break;
-        case 13: strcpy(rank, "K");     // King.
-            break;
         default: strcpy(rank, "");      // Empty string.
     }
 
     return rank;
 }
 
+/*------------------------------------------------------------------------*/
 int get_bet(void)
 {
     int bet;
 
     do
     {
-        printf("What is your bet? (From 1 to %d or 0 to quit) ", MAX_BET);
+        printf("What is your bet? (From 1 to %d or <= 0 to quit) ", MAX_BET);
         scanf(" %d", &bet);
-        if (0 == bet)
+        if (bet <= 0)
         {
             printf("Program terminating. Bye!\n");
             exit(EXIT_FAILURE);
@@ -121,24 +134,25 @@ int get_bet(void)
     return bet;
 }
 
-void get_first_hand(int card_rank[], int card_suit[], int hand)
+/*------------------------------------------------------------------------*/
+void get_first_hand(Hand * p_first_hand)
 {
     int i, j;
     bool card_dup;
 
-    for (i = 0; i < hand; ++i)
+    for (i = 0; i < HAND; ++i)
     {
         card_dup = false;
         do
         {
-            card_rank[i] = rand() % RANKS;
-            card_suit[i] = rand() % SUITS;
+            p_first_hand->card_ranks[i] = rand() % RANKS;
+            p_first_hand->card_suits[i] = rand() % SUITS;
 
             // This loop guarantees that the given pair will unique.
             for (j = 0; j < i; ++j)
             {
-                if (card_rank[i] == card_rank[j] &&
-                    card_suit[i] == card_suit[j])
+                if (p_first_hand->card_ranks[i] == p_first_hand->card_ranks[j] &&
+                    p_first_hand->card_suits[i] == p_first_hand->card_suits[j])
                 {
                     card_dup = true;
                 }
@@ -147,9 +161,9 @@ void get_first_hand(int card_rank[], int card_suit[], int hand)
     }
 }
 
-void get_final_hand(const int card_rank[], int final_rank[], 
-                    const int card_suit[], int final_suit[], int hand,
-                    int ranks_in_hand[], int suits_in_hand[])
+/*------------------------------------------------------------------------*/
+void get_final_hand(Hand * p_final_hand, const Hand * p_first_hand, 
+    int ranks_in_hand[], int suits_in_hand[])
 {
     int i, j;
     char str[SIZE];
@@ -158,31 +172,31 @@ void get_final_hand(const int card_rank[], int final_rank[],
     char * rank;
     char ans;
 
-    for (i = 0; i < hand; ++i)
+    for (i = 0; i < HAND; ++i)
     {
-        suit = get_suit(card_suit[i]);
-        rank = get_rank(card_rank[i], str);
+        suit = get_suit(p_first_hand->card_suits[i]);
+        rank = get_rank(p_first_hand->card_ranks[i], str);
 
         printf("Do you want to draw a card #%d: %s%c? (Y/N) ", 
             i + 1, rank, suit);
         scanf(" %c", &ans);
         if ('N' == toupper(ans))
         {
-            final_rank[i] = card_rank[i];
-            final_suit[i] = card_suit[i];
+            p_final_hand->card_ranks[i] = p_first_hand->card_ranks[i];
+            p_final_hand->card_suits[i] = p_first_hand->card_suits[i];
         }
         else if ('Y' == toupper(ans))
         {
             do
             {
                 card_dup = false;
-                final_rank[i] = rand() % RANKS;
-                final_suit[i] = rand() % SUITS;
+                p_final_hand->card_ranks[i] = rand() % RANKS;
+                p_final_hand->card_suits[i] = rand() % SUITS;
 
-                for (j = 0; j < hand; ++j)
+                for (j = 0; j < HAND; ++j)
                 {
-                    if (final_rank[i] == card_rank[j] &&
-                        final_suit[i] == card_suit[j])
+                    if (p_final_hand->card_ranks[i] == p_first_hand->card_ranks[j] &&
+                        p_final_hand->card_suits[i] == p_first_hand->card_suits[j])
                     {
                         card_dup = true;
                     }
@@ -190,20 +204,21 @@ void get_final_hand(const int card_rank[], int final_rank[],
 
                 for (j = 0; j < i; ++j)
                 {
-                    if (final_rank[i] == final_rank[j] && 
-                        final_suit[i] == final_suit[j])
+                    if (p_final_hand->card_ranks[i] == p_final_hand->card_ranks[j] && 
+                        p_final_hand->card_suits[i] == p_final_hand->card_suits[j])
                     {
                         card_dup = true;
                     }
                 }
             } while (card_dup);
         }
-        ranks_in_hand[final_rank[i]]++;
-        suits_in_hand[final_suit[i]]++;
+        ranks_in_hand[p_final_hand->card_ranks[i]]++;
+        suits_in_hand[p_final_hand->card_suits[i]]++;
     }
 }
 
-int analyze_hand(int ranks_in_hand[], int ranks, int suits_in_hand[], int suits)
+/*------------------------------------------------------------------------*/
+int analyze_hand(const int ranks_in_hand[], const int suits_in_hand[])
 {
     int win_factor = 0;     // The winning factor for a player.
     int num_consec = 0;     // The number of consecutive cards.
@@ -213,14 +228,14 @@ int analyze_hand(int ranks_in_hand[], int ranks, int suits_in_hand[], int suits)
 
     pairs = 0;
     three = four = flush = straight = false;
-    for (suit = 0; suit < suits; ++suit)
+    for (suit = 0; suit < SUITS; ++suit)
         if (HAND == suits_in_hand[suit])
             flush = true;        
         
     rank = 0;
     while (0 == ranks_in_hand)
         ++rank;
-    while (rank < ranks && ranks_in_hand[rank])
+    while (rank < RANKS && ranks_in_hand[rank])
     {
         ++num_consec;
         ++rank;
@@ -228,7 +243,7 @@ int analyze_hand(int ranks_in_hand[], int ranks, int suits_in_hand[], int suits)
     if (HAND == num_consec)
         straight = true;
 
-    for (rank = 0; rank < ranks; ++rank)
+    for (rank = 0; rank < RANKS; ++rank)
     {
         if (2 == ranks_in_hand[rank])
             ++pairs;
